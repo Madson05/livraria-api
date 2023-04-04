@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-mongoose.connect(`mongodb+srv://library-node:node123@library.ahsspuc.mongodb.net/?`)
+mongoose.connect(process.env.STRING_CONNECTION)
 
 
 let db = mongoose.connection;
