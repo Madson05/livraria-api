@@ -20,11 +20,11 @@ class authorController {
     }
   };
 
-  static createAuthor = (req, res) => {
+  static createAuthor = async (req, res) => {
     try {
       let author = new authors(req.body);
-      author.save();
-      res.status(201).send(author.toJSON());
+      const authorResult = await author.save();
+      res.status(201).send(authorResult.toJSON());
     } catch (err) {
       res
         .status(500)
@@ -46,10 +46,10 @@ class authorController {
     }
   };
 
-  static deleteAuthor = (req, res) => {
+  static deleteAuthor = async (req, res) => {
     try {
       const id = req.params.id;
-      authors.findByIdAndDelete(id);
+      await authors.findByIdAndDelete(id);
       res.status(200).send({ message: "Autor removido com sucesso" });
     } catch (err) {
       res.status(500).send({ message: err.message });
