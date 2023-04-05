@@ -8,8 +8,8 @@ const bookSchema = new mongoose.Schema(
     publisher: {type: String, required: true},
     numberPages: {type: Number, required: true}
   }
-)
+);
 
-const books = mongoose.model("books", bookSchema)
+const books = mongoose.model("books", bookSchema);
 
 export default books;
