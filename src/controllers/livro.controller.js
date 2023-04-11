@@ -13,12 +13,12 @@ class livroController {
   };
 
   static getBookById = async (req, res, next) => {
-    const id = req.params.id.toString();
+    const id = req.params.id;
     try{
       const booksResult = await books
         .findById(id)
         .populate("author", "name")
-        res.status(200).send(book)
+        res.status(200).send(booksResult)
     }catch(error){
       next(error)
     }
