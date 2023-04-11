@@ -1,3 +1,4 @@
+import notFound from "../errors/notFound.js";
 import books from "../models/Book.js";
 
 class livroController {
@@ -18,7 +19,11 @@ class livroController {
       const booksResult = await books
         .findById(id)
         .populate("author", "name")
+      if(booksResult){
         res.status(200).send(booksResult)
+      }else{
+        next(new notFound("Id do livro não encontrado"))
+      }
     }catch(error){
       next(error)
     }
