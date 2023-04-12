@@ -19,8 +19,10 @@ const bookSchema = new mongoose.Schema({
   numberPages: {
     type: Number,
     required: [true, "O campo numberPages é obrigatório"],
-    min: [10, "O campo numberPages deve estar entre 10 e 5000. Valor fornecido: {VALUE}"],
-    max: [5000, "O campo numberPages deve estar entre 10 e 5000. Valor fornecido: {VALUE}"],
+    validate: 
+    {validator: (valor) => {
+      return valor >= 10 && valor <=5000;
+    }, message: "O numero de páginas deve estar entre 10  e 5000. Valor fornecido: {VALUE}"}
   },
 });
 
