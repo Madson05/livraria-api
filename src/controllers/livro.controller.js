@@ -30,16 +30,23 @@ class livroController {
     try {
       const query = await processQuery(req.query);
 
-      const bookResult = await books.find(query)
-      .populate("author");
-      if (bookResult) {
-        res.status(200).send(bookResult);
-      } else {
-        next(new notFound("Editora não encontrada"));
-      }
+      if(query !== null){
+        
+        const bookResult = await books.find(query)
+        .populate("author");
+        if (bookResult) {
+          res.status(200).send(bookResult);
+        } else {
+          next(new notFound("Editora não encontrada"));
+        }
+      }else{
+        res.status(200).send([]);
+      } 
     } catch (error) {
       next(error);
+      
     }
+
   };
 
   static createBook = async (req, res, next) => {
@@ -85,7 +92,7 @@ class livroController {
 async function processQuery(params) {
   const { publisher, title, minPages, maxPages, nameAuthor } = params;
 
-  const query = {};
+  let query = {};
 
   if (minPages || maxPages) query.numberPages = {};
 
@@ -95,8 +102,12 @@ async function processQuery(params) {
   if (maxPages) query.numberPages.$lte = maxPages;
   if (nameAuthor) {
     const author = await authors.findOne({ name: { $regex: nameAuthor, $options: "i" } });
-    const authorId = author._id;
-    query.author = authorId;
+
+    if(author !== null){
+      query.author = author._id;
+    }else{
+      query = null
+    }
   }
 
   return query;
