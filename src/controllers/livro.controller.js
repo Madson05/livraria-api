@@ -1,5 +1,5 @@
 import notFound from "../errors/notFound.js";
-import {books} from "../models/index.js";
+import { books } from "../models/index.js";
 
 class livroController {
   static getBooks = async (req, res, next) => {
@@ -25,10 +25,16 @@ class livroController {
     }
   };
 
-  static getBookByPublisher = async (req, res, next) => {
+  static getBookByQuery = async (req, res, next) => {
     try {
-      const publisher = req.query.publisher;
-      const bookResult = await books.find({ publisher: publisher }, {});
+      const { publisher, title } = req.query;
+
+      const query = {}
+
+      if(publisher) query.publisher = publisher;
+      if(title) query.title = title
+
+      const bookResult = await books.find(query);
       if (bookResult) {
         res.status(200).send(bookResult);
       } else {
@@ -54,10 +60,10 @@ class livroController {
       const id = req.params.id;
       const bookResult = await books.findByIdAndUpdate(id, { $set: req.body });
 
-      if(bookResult){
+      if (bookResult) {
         res.status(200).send({ message: "O livro foi alterado com sucesso" });
-      }else{
-        next(new notFound("Id do livro não encontrado"))
+      } else {
+        next(new notFound("Id do livro não encontrado"));
       }
     } catch (error) {
       next(error);
@@ -68,10 +74,10 @@ class livroController {
     try {
       const id = req.params.id;
       const bookResult = books.findByIdAndDelete(id);
-      if(bookResult){
+      if (bookResult) {
         res.status(200).send({ message: "Livro removido com sucesso" });
-      }else{
-        next(new notFound("Id do livro não encontrado"))
+      } else {
+        next(new notFound("Id do livro não encontrado"));
       }
     } catch (error) {
       next(error);
