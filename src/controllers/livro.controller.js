@@ -94,9 +94,9 @@ async function processQuery(params) {
   if (minPages) query.numberPages.$gte = minPages;
   if (maxPages) query.numberPages.$lte = maxPages;
   if (nameAuthor) {
-    const author = await authors.findOne({ name: nameAuthor });
+    const author = await authors.findOne({ name: { $regex: nameAuthor, $options: "i" } });
     const authorId = author._id;
-    query.author = authorId
+    query.author = authorId;
   }
 
   return query;
