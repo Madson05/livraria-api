@@ -31,8 +31,8 @@ class livroController {
 
       const query = {}
 
-      if(publisher) query.publisher = publisher;
-      if(title) query.title = title
+      if(publisher) query.publisher = { $regex: publisher, $options: "i" }
+      if(title) query.title = { $regex: title, $options: "i" }
 
       const bookResult = await books.find(query);
       if (bookResult) {
