@@ -6,12 +6,18 @@ import { books } from "../models/index.js";
 class livroController {
   static getBooks = async (req, res, next) => {
     try {
-      const { limit = 5, page = 1 } = req.query;
+      let { limit = 5, page = 1, ordination = "_id:-1" } = req.query;
 
+      let [sortField, order] = ordination.split(":")
+
+      limit = parseInt(limit)
+      page = parseInt(page)
+      order = parseInt(order)
 
       if (limit > 0 && page > 0) {
         const booksResult = await books
           .find()
+          .sort({ [sortField] : order})
           .skip((page - 1) * limit)
           .limit(limit)
           .populate("author");
