@@ -5,8 +5,9 @@ import {authors} from "../models/index.js";
 class authorController {
   static getAuthors = async (req, res, next) => {
     try {
-      const authorsResult = await authors.find();
-      res.send(authorsResult);
+      const authorsResult = authors.find();
+      req.result = authorsResult
+      next()
     } catch (error) {
       next(error)
     }

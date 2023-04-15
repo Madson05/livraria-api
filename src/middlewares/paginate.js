@@ -18,7 +18,6 @@ async function paginate(req, res, next){
           .sort({ [sortField] : order})
           .skip((page - 1) * limit)
           .limit(limit)
-          .populate("author");
         res.json(paginatedResult);
       } else{
         next(new badRequest())
