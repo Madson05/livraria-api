@@ -3,9 +3,14 @@ import authors from "../models/Author.js";
 import { books } from "../models/index.js";
 
 class livroController {
+
   static getBooks = async (req, res, next) => {
     try {
-      const booksResult = await books.find().populate("author");
+      const { limit = 5, page = 1 } = req.query
+      const booksResult = await books.find()
+      .skip((page-1)*limit)
+      .limit(limit)
+      .populate("author");
       res.json(booksResult);
     } catch (error) {
       next(error);
