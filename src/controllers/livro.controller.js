@@ -1,17 +1,24 @@
+import badRequest from "../errors/badRequest.js";
 import notFound from "../errors/notFound.js";
 import authors from "../models/Author.js";
 import { books } from "../models/index.js";
 
 class livroController {
-
   static getBooks = async (req, res, next) => {
     try {
-      const { limit = 5, page = 1 } = req.query
-      const booksResult = await books.find()
-      .skip((page-1)*limit)
-      .limit(limit)
-      .populate("author");
-      res.json(booksResult);
+      const { limit = 5, page = 1 } = req.query;
+
+
+      if (limit > 0 && page > 0) {
+        const booksResult = await books
+          .find()
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .populate("author");
+        res.json(booksResult);
+      } else{
+        next(new badRequest())
+      }
     } catch (error) {
       next(error);
     }
@@ -35,23 +42,19 @@ class livroController {
     try {
       const query = await processQuery(req.query);
 
-      if(query !== null){
-        
-        const bookResult = await books.find(query)
-        .populate("author");
+      if (query !== null) {
+        const bookResult = await books.find(query).populate("author");
         if (bookResult) {
           res.status(200).send(bookResult);
         } else {
           next(new notFound("Editora não encontrada"));
         }
-      }else{
+      } else {
         res.status(200).send([]);
-      } 
+      }
     } catch (error) {
       next(error);
-      
     }
-
   };
 
   static createBook = async (req, res, next) => {
@@ -106,12 +109,14 @@ async function processQuery(params) {
   if (minPages) query.numberPages.$gte = minPages;
   if (maxPages) query.numberPages.$lte = maxPages;
   if (nameAuthor) {
-    const author = await authors.findOne({ name: { $regex: nameAuthor, $options: "i" } });
+    const author = await authors.findOne({
+      name: { $regex: nameAuthor, $options: "i" },
+    });
 
-    if(author !== null){
+    if (author !== null) {
       query.author = author._id;
-    }else{
-      query = null
+    } else {
+      query = null;
     }
   }
 

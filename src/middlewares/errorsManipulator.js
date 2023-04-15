@@ -10,10 +10,9 @@ function errorManipulator(error, req, res, next) {
     new badRequest().enviarResposta(res)
   }else if(error instanceof mongoose.Error.ValidationError){
     new validationError(error).enviarResposta(res)
-  }else if(error instanceof notFound){
+  }else if(error instanceof erroBase){
     error.enviarResposta(res)
   }
-  
   else{
     new erroBase().enviarResposta(res)
   }
