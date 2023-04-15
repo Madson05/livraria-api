@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import autopopulate from "mongoose-autopopulate";
 
 const bookSchema = new mongoose.Schema({
   id: { type: String },
@@ -7,6 +8,7 @@ const bookSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "authors",
     required: [true, "O campo author é obrigatório"],
+    autopopulate: {select: "name"}
   },
   publisher: {
     type: String,
@@ -25,7 +27,7 @@ const bookSchema = new mongoose.Schema({
     }, message: "O numero de páginas deve estar entre 10  e 5000. Valor fornecido: {VALUE}"}
   },
 });
-
+bookSchema.plugin(autopopulate);
 const books = mongoose.model("books", bookSchema);
 
 export default books;
