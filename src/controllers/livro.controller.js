@@ -6,25 +6,9 @@ import { books } from "../models/index.js";
 class livroController {
   static getBooks = async (req, res, next) => {
     try {
-      let { limit = 5, page = 1, ordination = "_id:-1" } = req.query;
-
-      let [sortField, order] = ordination.split(":")
-
-      limit = parseInt(limit)
-      page = parseInt(page)
-      order = parseInt(order)
-
-      if (limit > 0 && page > 0) {
-        const booksResult = await books
-          .find()
-          .sort({ [sortField] : order})
-          .skip((page - 1) * limit)
-          .limit(limit)
-          .populate("author");
-        res.json(booksResult);
-      } else{
-        next(new badRequest())
-      }
+      const resultBooks = books.find();
+      req.result = resultBooks;
+      next();
     } catch (error) {
       next(error);
     }
@@ -49,12 +33,9 @@ class livroController {
       const query = await processQuery(req.query);
 
       if (query !== null) {
-        const bookResult = await books.find(query).populate("author");
-        if (bookResult) {
-          res.status(200).send(bookResult);
-        } else {
-          next(new notFound("Editora não encontrada"));
-        }
+        const bookResult = books.find(query)
+        req.result = bookResult
+        next();
       } else {
         res.status(200).send([]);
       }
